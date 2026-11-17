@@ -1,0 +1,6 @@
+{
+  "name": "PROne（ピーアールワン）",
+  "description": "政治・地域・学校・個人・ビジネスのPR動画をすべて約1分（60秒）でサクッと視聴・共有できるWebプラットフォーム。",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}
