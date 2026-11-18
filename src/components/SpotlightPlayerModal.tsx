@@ -14,6 +14,7 @@ import {
 } from 'lucide-react';
 import { PRVideo } from '../types/video';
 import { prAudioEngine } from '../utils/prAudioEngine';
+import { useVideoSeo } from '../utils/seoUtils';
 import {
   computeProgressRatio,
   formatCompactCount,
@@ -61,6 +62,8 @@ export const SpotlightPlayerModal: React.FC<SpotlightPlayerModalProps> = ({
   const [autoplayBlocked, setAutoplayBlocked] = useState(false);
   const videoRef = useRef<HTMLVideoElement | null>(null);
   const lastSpokenCaptionRef = useRef<string>('');
+
+  useVideoSeo(video);
 
   useEffect(() => {
     setElapsedSec(0);

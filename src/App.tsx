@@ -68,6 +68,17 @@ function loadInitialVideos(): PRVideo[] {
   }
 }
 
+function getInitialTheaterVideoId(videos: PRVideo[]): string | null {
+  if (typeof window === 'undefined') return null;
+  try {
+    const paramId = new URLSearchParams(window.location.search).get('v');
+    if (!paramId) return null;
+    return videos.some((v) => v.id === paramId) ? paramId : null;
+  } catch {
+    return null;
+  }
+}
+
 export default function App() {
   const [videos, setVideos] = useState<PRVideo[]>(loadInitialVideos);
   const [selectedCategory, setSelectedCategory] = useState<CategoryId>('all');
@@ -75,7 +86,9 @@ export default function App() {
   const [viewMode, setViewMode] = useState<ViewMode>('timeline');
   const [trendingPeriod, setTrendingPeriod] = useState<TrendingPeriod>('weekly');
   const [previewPlayingId, setPreviewPlayingId] = useState<string | null>(null);
-  const [theaterVideoId, setTheaterVideoId] = useState<string | null>(null);
+  const [theaterVideoId, setTheaterVideoId] = useState<string | null>(() =>
+    getInitialTheaterVideoId(INITIAL_VIDEOS)
+  );
   const [isPostModalOpen, setIsPostModalOpen] = useState(false);
   const [isSettingsModalOpen, setIsSettingsModalOpen] = useState(false);
 
@@ -110,6 +123,22 @@ export default function App() {
       // Ignore storage errors
     }
   }, [videos]);
+
+  // Sync active spotlight video ID to ?v= query parameter for shareable & indexable URLs
+  useEffect(() => {
+    if (typeof window === 'undefined') return;
+    try {
+      const url = new URL(window.location.href);
+      if (theaterVideoId) {
+        url.searchParams.set('v', theaterVideoId);
+      } else {
+        url.searchParams.delete('v');
+      }
+      window.history.replaceState(null, '', url.toString());
+    } catch {
+      // Ignore history API errors
+    }
+  }, [theaterVideoId]);
 
   // Cmd/Ctrl + K or "/" focuses search bar (Raycast/Linear ergonomics)
   useEffect(() => {
